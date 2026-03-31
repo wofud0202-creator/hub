@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>벨앤보 운영 허브</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, 'Apple SD Gothic Neo', sans-serif;
+  background: #f4f3ef; color: #1a1a18;
+  min-height: 100vh; padding-bottom: 40px;
+}
+.header {
+  background: #1a1a18; padding: 20px 20px 0;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.brand-name { color: #fff; font-size: 17px; font-weight: 500; letter-spacing: 0.5px; }
+.brand-sub { color: #666; font-size: 11px; margin-top: 2px; }
+.date-badge { background: #2a2a28; color: #888; font-size: 11px; padding: 4px 10px; border-radius: 100px; }
+.tabs { display: flex; border-bottom: 1px solid #2a2a28; }
+.tab {
+  flex: 1; text-align: center; padding: 10px 0 12px;
+  font-size: 13px; color: #666; cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all .2s;
+}
+.tab.active { color: #fff; border-bottom-color: #fff; font-weight: 500; }
+.content { padding: 16px; display: none; }
+.content.active { display: block; }
+
+.notice-banner {
+  background: #fff; border: 0.5px solid #e0ddd6;
+  border-left: 3px solid #1a1a18; border-radius: 10px;
+  padding: 12px 14px; margin-bottom: 10px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.nb-dot { width: 6px; height: 6px; border-radius: 50%; background: #1a1a18; margin-top: 5px; flex-shrink: 0; }
+.nb-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.nb-date { font-size: 11px; color: #999; }
+
+.section-title {
+  font-size: 11px; font-weight: 500; color: #999;
+  letter-spacing: 0.8px; margin: 20px 0 8px;
+}
+.section-title:first-child { margin-top: 4px; }
+
+.tool-card {
+  background: #fff; border: 0.5px solid #e0ddd6; border-radius: 14px;
+  padding: 16px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; text-decoration: none; color: inherit;
+  transition: background .15s;
+}
+.tool-card:active { background: #f0efe9; }
+.tool-card.dim { opacity: .4; pointer-events: none; }
+.tool-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.icon-common { background: #eef0fb; }
+.icon-mandon { background: #f4f3ef; }
+.icon-lt     { background: #fdf5f5; }
+.icon-shared { background: #f0faf4; }
+.tool-info { flex: 1; }
+.tool-name { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+.tool-desc { font-size: 12px; color: #999; }
+.tool-arrow { color: #ccc; font-size: 16px; flex-shrink: 0; }
+.tag {
+  display: inline-block; font-size: 10px; padding: 2px 7px;
+  border-radius: 100px; margin-top: 5px;
+  background: #f4f3ef; color: #888;
+}
+.tag.live { background: #e8f5e8; color: #27ae60; }
+.tag.soon { background: #fef3e2; color: #c87e2a; }
+
+.notice-card {
+  background: #fff; border: 0.5px solid #e0ddd6; border-radius: 12px;
+  padding: 14px 16px; margin-bottom: 8px;
+}
+.nc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.nc-badge { font-size: 10px; padding: 2px 8px; border-radius: 100px; background: #f4f3ef; color: #888; }
+.nc-badge.urgent { background: #fde8e8; color: #c0392b; }
+.nc-date { font-size: 11px; color: #bbb; }
+.nc-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.nc-body { font-size: 12px; color: #777; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="brand-name">벨앤보 운영 허브</div>
+      <div class="brand-sub">BELLE &amp; BEAU · 직원 전용</div>
+    </div>
+    <div class="date-badge" id="today-date"></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="home" onclick="switchTab('home')">홈</div>
+    <div class="tab" data-tab="mandon" onclick="switchTab('mandon')">만돈</div>
+    <div class="tab" data-tab="lt" onclick="switchTab('lt')">라테라스</div>
+    <div class="tab" data-tab="notice" onclick="switchTab('notice')">공지</div>
+  </div>
+</div>
+
+<!-- 홈 -->
+<div class="content active" id="tab-home">
+
+  <div class="notice-banner" style="margin-top:4px">
+    <div class="nb-dot"></div>
+    <div>
+      <div class="nb-title">킨텍스점 오픈 후 운영 안정화 기간입니다. 이상 사항 즉시 보고 바랍니다.</div>
+      <div class="nb-date">2026. 3. 17</div>
+    </div>
+  </div>
+
+  <div class="section-title">공통</div>
+  <a class="tool-card" href="https://wofud0202-creator.github.io/onboarding/" target="_blank">
+    <div class="tool-icon icon-common">📋</div>
+    <div class="tool-info">
+      <div class="tool-name">온보딩 페이지</div>
+      <div class="tool-desc">첫 출근 전 준비사항 안내</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+
+  <a class="tool-card" href="https://forms.gle/EWQpgxmuTXeDLXYWA" target="_blank">
+    <div class="tool-icon icon-common">📝</div>
+    <div class="tool-info">
+      <div class="tool-name">신규입사자 인사관리카드</div>
+      <div class="tool-desc">정직원 입사 시 작성</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+  <a class="tool-card" href="https://forms.gle/MqpaBvZAU6j9tt5QA" target="_blank">
+    <div class="tool-icon icon-common">📝</div>
+    <div class="tool-info">
+      <div class="tool-name">파트타이머 인사관리카드</div>
+      <div class="tool-desc">파트타임 입사 시 작성</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+
+  <div class="section-title">만돈</div>
+  <a class="tool-card" href="https://musical-longma-fca86d.netlify.app/" target="_blank">
+    <div class="tool-icon icon-mandon">🔢</div>
+    <div class="tool-info">
+      <div class="tool-name">등심 작업량 계산기</div>
+      <div class="tool-desc">요일별 소비 체인 기반</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+
+  <div class="section-title">라테라스드파리</div>
+  <a class="tool-card" href="https://wofud0202-creator.github.io/lt-inventory/" target="_blank">
+    <div class="tool-icon icon-lt">🎂</div>
+    <div class="tool-info">
+      <div class="tool-name">케이크 재고 현황</div>
+      <div class="tool-desc">일산점 · 킨텍스점</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+  <a class="tool-card" href="https://wofud0202-creator.github.io/attendance/" target="_blank">
+    <div class="tool-icon icon-shared">🕐</div>
+    <div class="tool-info">
+      <div class="tool-name">직원·파트 근무 기록</div>
+      <div class="tool-desc">출퇴근 기록</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+
+</div>
+
+<!-- 만돈 -->
+<div class="content" id="tab-mandon">
+
+  <div class="section-title">운영 도구</div>
+  <a class="tool-card" href="https://musical-longma-fca86d.netlify.app/" target="_blank">
+    <div class="tool-icon icon-mandon">🔢</div>
+    <div class="tool-info">
+      <div class="tool-name">등심 작업량 계산기</div>
+      <div class="tool-desc">요일별 소비 체인 기반 계산</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-mandon">📦</div>
+    <div class="tool-info">
+      <div class="tool-name">히레·안심 작업 기록</div>
+      <div class="tool-desc">준비 중</div>
+      <span class="tag soon">준비 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-mandon">🛒</div>
+    <div class="tool-info">
+      <div class="tool-name">발주 체크리스트</div>
+      <div class="tool-desc">준비 중</div>
+      <span class="tag soon">준비 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+
+  <div class="section-title">공지사항</div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">운영</span><span class="nc-date">3. 26</span></div>
+    <div class="nc-title">등심 작업 기준 목표합 업데이트</div>
+    <div class="nc-body">화(29) 수(30) 목(34) 금(30) 토(30) 일(26) — 계산기 참고</div>
+  </div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">위생</span><span class="nc-date">3. 17</span></div>
+    <div class="nc-title">숙성고 온도 점검 일지 작성 철저히</div>
+    <div class="nc-body">매일 오픈·마감 시 온도 확인 후 기록 바랍니다.</div>
+  </div>
+
+  <div class="section-title">메뉴얼</div>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-mandon" style="font-size:18px">📄</div>
+    <div class="tool-info">
+      <div class="tool-name">등심 400시간 숙성 매뉴얼</div>
+      <div class="tool-desc">작업 기준·온도·보관</div>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-mandon" style="font-size:18px">📄</div>
+    <div class="tool-info">
+      <div class="tool-name">오픈·마감 체크리스트</div>
+      <div class="tool-desc">만돈 웨스턴돔점</div>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+
+</div>
+
+<!-- 라테라스 -->
+<div class="content" id="tab-lt">
+
+  <div class="section-title">운영 도구</div>
+  <a class="tool-card" href="https://wofud0202-creator.github.io/lt-inventory/" target="_blank">
+    <div class="tool-icon icon-lt">🎂</div>
+    <div class="tool-info">
+      <div class="tool-name">케이크 재고 현황</div>
+      <div class="tool-desc">일산점 · 킨텍스점</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+  <a class="tool-card" href="https://wofud0202-creator.github.io/attendance/" target="_blank">
+    <div class="tool-icon icon-shared">🕐</div>
+    <div class="tool-info">
+      <div class="tool-name">직원·파트 근무 기록</div>
+      <div class="tool-desc">출퇴근 기록</div>
+      <span class="tag live">운영 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </a>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-lt">📦</div>
+    <div class="tool-info">
+      <div class="tool-name">발주 체크리스트</div>
+      <div class="tool-desc">준비 중</div>
+      <span class="tag soon">준비 중</span>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+
+  <div class="section-title">공지사항</div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge urgent">긴급</span><span class="nc-date">3. 17</span></div>
+    <div class="nc-title">킨텍스점 오픈 — 운영 안정화 기간</div>
+    <div class="nc-body">스콘·크림 커피 중심 판매. 이상 사항 즉시 대표님께 보고.</div>
+  </div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">품질</span><span class="nc-date">3. 10</span></div>
+    <div class="nc-title">케이크 슬라이스 2일 판매 기준 준수</div>
+    <div class="nc-body">제조일 기준 2일 이내 판매. 초과분 즉시 폐기.</div>
+  </div>
+
+  <div class="section-title">메뉴얼</div>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-lt" style="font-size:18px">📄</div>
+    <div class="tool-info">
+      <div class="tool-name">케이크 데코·포장 매뉴얼</div>
+      <div class="tool-desc">라테라스 품질 기준</div>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-lt" style="font-size:18px">📄</div>
+    <div class="tool-info">
+      <div class="tool-name">알레르기 표시 기준</div>
+      <div class="tool-desc">킨텍스점 적용 기준</div>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+  <div class="tool-card dim">
+    <div class="tool-icon icon-lt" style="font-size:18px">📄</div>
+    <div class="tool-info">
+      <div class="tool-name">고객 응대 스크립트</div>
+      <div class="tool-desc">예약·픽업·B2B</div>
+    </div>
+    <div class="tool-arrow">›</div>
+  </div>
+
+</div>
+
+<!-- 공지 -->
+<div class="content" id="tab-notice">
+  <div class="section-title">전체</div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">전체</span><span class="nc-date">3. 17</span></div>
+    <div class="nc-title">킨텍스점 오픈 후 운영 안정화 기간</div>
+    <div class="nc-body">매장 이상 사항 즉시 보고. 피드백은 카카오톡 단체방으로.</div>
+  </div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">인사</span><span class="nc-date">3. 1</span></div>
+    <div class="nc-title">3월 근무 일정 확인</div>
+    <div class="nc-body">일정 변경 시 최소 3일 전 사전 요청 바랍니다.</div>
+  </div>
+
+  <div class="section-title">만돈</div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">운영</span><span class="nc-date">3. 26</span></div>
+    <div class="nc-title">등심 작업 기준 목표합 업데이트</div>
+    <div class="nc-body">화(29) 수(30) 목(34) 금(30) 토(30) 일(26) — 계산기 사용</div>
+  </div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">위생</span><span class="nc-date">3. 17</span></div>
+    <div class="nc-title">숙성고 온도 점검 일지 작성 철저히</div>
+    <div class="nc-body">매일 오픈·마감 시 온도 확인 후 기록.</div>
+  </div>
+
+  <div class="section-title">라테라스</div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge urgent">긴급</span><span class="nc-date">3. 17</span></div>
+    <div class="nc-title">킨텍스점 오픈 안정화</div>
+    <div class="nc-body">스콘·크림 커피 중심 판매. 이상 사항 즉시 보고.</div>
+  </div>
+  <div class="notice-card">
+    <div class="nc-head"><span class="nc-badge">품질</span><span class="nc-date">3. 10</span></div>
+    <div class="nc-title">케이크 슬라이스 2일 판매 기준 준수</div>
+    <div class="nc-body">제조일 기준 2일 이내 판매. 초과분 즉시 폐기.</div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const d = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  document.getElementById('today-date').textContent =
+    (d.getMonth()+1) + '/' + d.getDate() + ' (' + days[d.getDay()] + ')';
+});
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.content').forEach(c =>
+    c.classList.toggle('active', c.id === 'tab-' + tab));
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
